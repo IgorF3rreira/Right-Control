@@ -1,0 +1,139 @@
+body{
+    background-color: black !important;
+    color: white;
+}
+
+.logo{
+    width: 30%;
+}
+#textoInicial2{
+    display: none;
+}
+@media screen and (max-width: 720px) {
+    .logo{
+        width: 50%;
+    }
+
+
+    #textoInicial{
+        display: none;
+    }
+    #textoInicial2{
+        display: block;
+        justify-content: center;
+        text-align: center;
+        margin-top: 2px;
+        font-size: 1.1rem;
+        letter-spacing:1px;
+        text-transform: uppercase;
+        border-right:0px solid;
+        white-space: nowrap;
+    
+        overflow: hidden;
+        
+        width: 21ch;
+        animation: mark .9s step-end  infinite, write 6s steps(9, end) alternate;
+    }
+    @keyframes mark{
+        0%{
+            border-right-color:transparent ;
+        }
+    }
+    @keyframes write {
+        0%{
+            width: 0px;
+        }
+    }
+    
+
+     /* botoes */
+
+    
+
+    #btnCad{
+        margin-top: 25px;
+       
+    }
+    
+    
+}
+
+
+
+
+main{
+
+
+    width: 80%;
+    display: block;
+    margin: auto;
+    text-align: center;
+    height: 96vh;
+
+}
+
+
+
+
+#textoInicial{
+    justify-content: center;
+    text-align: center;
+    margin-top: 2px;
+    font-size: 1.1rem;
+    letter-spacing:2px;
+    text-transform: uppercase;
+    border-right:2px solid;
+    white-space: nowrap;
+
+    overflow: hidden;
+    
+    width: 51ch;
+    animation: mark .9s step-end  infinite, write 3s steps(30, end) alternate;
+}
+@keyframes mark{
+    20%{
+        border-right-color:transparent ;
+    }
+}
+@keyframes write {
+    0%{
+        width: 0px;
+    }
+}
+
+
+#btns{
+    margin-top: 100px;
+}
+
+#btnLog:hover{
+    width: 400px;
+    border: 2px solid gray;
+    transform: scale(0.9);
+    transition: 0.5s;
+} 
+ #btnCad{
+   
+    margin-top: 25px;
+   
+} 
+ #btnCad:hover{
+    width: 400px;
+    border: 2px solid gray;
+    transform: scale(0.9);
+    transition: 0.5s;
+   
+}
+
+
+#meu-footer{
+    width: 100%;
+    height: 37px;
+    text-align: center;
+    justify-content: center;
+   
+}
+a{
+    text-decoration: none;
+    color: white;
+}
