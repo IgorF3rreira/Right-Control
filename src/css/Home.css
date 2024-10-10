@@ -5,7 +5,7 @@
 }
 body{
     overflow: hidden;
-    background-color: black;
+    background: linear-gradient(90deg, rgba(0,0,0,1) 14%, rgba(15,15,15,1) 31%, rgba(0,0,0,1) 47%, rgba(36,35,35,1) 65%, rgba(0,0,0,1) 90%, rgba(38,37,37,1) 100%);
     color: white;
 }
 header{
@@ -48,7 +48,7 @@ header{
 main{
     width: 80%;
     height: 100vh;
-    border: 1PX solid red;
+
     display: block;
     align-items: center;
     justify-content: center;
@@ -62,4 +62,26 @@ main h1{
 text-align: center;
 
 }
+.divBotoes{
+    margin-bottom: 25px;
+    text-align: center;
+}
 
+#categorias{
+    text-align: center;
+    width: 160px;
+    border-radius: 15px;
+    
+}
+#pesquisa{
+    width: 230px;
+    text-align: center;
+    border-radius: 15px;
+    height: 38px;
+}
+
+table{
+    border: 1px solid red;
+    max-height: 600px; /* Defina a altura máxima desejada */
+    overflow-y: auto; /* Adiciona a rolagem vertical */
+}
