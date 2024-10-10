@@ -1,46 +1,46 @@
 <?php
 
-    include_once 'Conexao.php';
+    // include_once 'Conexao.php';
 
-    if(isset($_POST['submit'])){
-        $email = isset($_POST['email']) ? $_POST['email'] :null;
-        $senha = isset($_POST['senha']) ? $_POST['senha'] :null;
-        $senhaCrypto = hash('Sha256', $senha);
+    // if(isset($_POST['submit'])){
+    //     $email = isset($_POST['email']) ? $_POST['email'] :null;
+    //     $senha = isset($_POST['senha']) ? $_POST['senha'] :null;
+    //     $senhaCrypto = hash('Sha256', $senha);
 
-        // Verificar se os campos estão vazio
-        if(empty($email) || empty($senha)  ){
-            echo '<script type="text/javascript"> 
-                window.alert("Preencha todos os campos");
-            </script>';
-        }else{
-            // Verificação para saber se existe o email e a senha informado nos input
+    //     // Verificar se os campos estão vazio
+    //     if(empty($email) || empty($senha)  ){
+    //         echo '<script type="text/javascript"> 
+    //             window.alert("Preencha todos os campos");
+    //         </script>';
+    //     }else{
+    //         // Verificação para saber se existe o email e a senha informado nos input
 
-            $sql = 'SELECT * FROM tab_usuarios WHERE email = :email AND senha = :senha';
-            $query = $bd->prepare(  $sql );
-            $query->bindParam(':email', $email);
-            $query->bindParam(':senha', $senhaCrypto);
-            $query->execute();
-            $usuarios = $query->fetchAll(PDO::FETCH_ASSOC);
+    //         $sql = 'SELECT * FROM tab_usuarios WHERE email = :email AND senha = :senha';
+    //         $query = $bd->prepare(  $sql );
+    //         $query->bindParam(':email', $email);
+    //         $query->bindParam(':senha', $senhaCrypto);
+    //         $query->execute();
+    //         $usuarios = $query->fetchAll(PDO::FETCH_ASSOC);
             
-            if(count($usuarios) <= 0){
-              echo '<script type="text/javascript"> 
-                window.alert("Usuario ainda não cadastrado");
-                    </script>';
-            }else{  //'else para caso ele encontre  as informações passadas, redirecionar para a pagina que só pode ser acessada se estiver logado'
-                header('Location: home.php');
+    //         if(count($usuarios) <= 0){
+    //           echo '<script type="text/javascript"> 
+    //             window.alert("Usuario ainda não cadastrado");
+    //                 </script>';
+    //         }else{  //'else para caso ele encontre  as informações passadas, redirecionar para a pagina que só pode ser acessada se estiver logado'
+    //             header('Location: home.php');
                 
-                //Abrir uma sessão, e nessas sessões  receber as informações de quem esta logado pegando as informações no banco de dados
+    //             //Abrir uma sessão, e nessas sessões  receber as informações de quem esta logado pegando as informações no banco de dados
 
-                $usuario = $usuarios[0];
-                session_start();
-                $_SESSION['login'] = $login;
-                $_SESSION['logado'] = true;
-                $_SESSION['id_usuario'] = $usuario['id_usuario'];
-                $_SESSION['nome'] = $usuario['nome'];
-            }
+    //             $usuario = $usuarios[0];
+    //             session_start();
+    //             $_SESSION['login'] = $login;
+    //             $_SESSION['logado'] = true;
+    //             $_SESSION['id_usuario'] = $usuario['id_usuario'];
+    //             $_SESSION['nome'] = $usuario['nome'];
+    //         }
             
-        }
-    }
+    //     }
+    // }
 
 ?>
 
