@@ -1,7 +1,46 @@
 <?php
+// iniciar sessao de login
+session_start();
 
 // Arquivo de conexao
 include_once 'Conexao.php';
+
+$erroNenhum = false;
+
+// criando o metodo para fazer a busca no input de pesquisa
+$pesquisa = isset($_POST['pesquisa']) ? $_POST['pesquisa'] :null;
+$categoria = isset($_POST['categoria']) ? $_POST['categoria'] :null;
+
+// verificar se a varivel esta vazia e se ela estiver vazia iremos buscar tods os dado no banco de dados
+if(empty($pesquisa) && empty($categoria)){
+  $sql = 'SELECT * FROM tab_produtos';
+
+  try {
+    $query = $bd->prepare($sql);
+    $query->execute(); 
+    $res = $query->fetchAll(PDO::FETCH_ASSOC);
+  }catch(PDOException $e) {
+    echo $e->getMessage();
+  }
+}
+
+//  Fazer a consulta com o parametro que foi colocado no input de pesquisa
+else{
+  $sql = 'SELECT * FROM tab_produtos WHERE nome LIKE :nome AND categoria LIKE :categoria';
+  try {
+    $query = $bd->prepare($sql);
+    $query->bindValue(':nome','%'. $pesquisa . '%');
+    $query->bindValue(':categoria','%'. $categoria . '%');
+    $query->execute();
+    $res = $query->fetchAll(PDO::FETCH_ASSOC);
+    if(count($res) <= 0){
+      $erroNenhum = true;
+  }
+   
+    } catch(PDOException $e) {
+      echo $e->getMessage();
+      }
+}
 
 ?>
 
@@ -78,6 +117,7 @@ include_once 'Conexao.php';
 <main>
     <h1>SUA PRATELEIRA</h1>
 
+    <form action="" method="post" name="form" id="form">
 
     <div class="container divBotoes">  
         <a class="btn btn-secondary" href="#AdicionarProdutos" data-bs-toggle="modal" data-bs-target="">Adicionar novo produto</a>
@@ -87,6 +127,8 @@ include_once 'Conexao.php';
         <input class="" type="search" name="pesquisa" id="pesquisa" placeholder="Pesquise seu produto">
        
     </div>
+
+    </form>
 
     <table class="table resposive table-sm  table-secondary table-hover  ">
   <thead>
