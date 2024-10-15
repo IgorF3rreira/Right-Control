@@ -18,7 +18,7 @@ if(empty($pesquisa) && empty($categoria)){
   try {
     $query = $bd->prepare($sql);
     $query->execute(); 
-    $res = $query->fetchAll(PDO::FETCH_ASSOC);
+    $resultado = $query->fetchAll(PDO::FETCH_ASSOC);
   }catch(PDOException $e) {
     echo $e->getMessage();
   }
@@ -32,8 +32,8 @@ else{
     $query->bindValue(':nome','%'. $pesquisa . '%');
     $query->bindValue(':categoria','%'. $categoria . '%');
     $query->execute();
-    $res = $query->fetchAll(PDO::FETCH_ASSOC);
-    if(count($res) <= 0){
+    $resultado = $query->fetchAll(PDO::FETCH_ASSOC);
+    if(count($resultado) <= 0){
       $erroNenhum = true;
   }
    
@@ -130,43 +130,45 @@ else{
 
     </form>
 
-    <table class="table resposive table-sm  table-secondary table-hover  ">
-  <thead>
-    <tr>
-      <th scope="col">Id produto</th>
-      <th scope="col">Nome</th>
-      <th scope="col">Categoria</th>
-      <th scope="col">Quantidade</th>
-      <th scope="col">Preço</th>
-      <th scope="col">Adicionar</th>
-      <th scope="col">Editar</th>
-      <th scope="col">Excluir</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th scope="row">1</th>
-      <td>Mark</td>
-      <td>Otto</td>
-      <td>@mdo</td>
-      <td>@mdo</td>
-    </tr>
-    <tr>
-      <th scope="row">2</th>
-      <td>Jacob</td>
-      <td>Thornton</td>
-      <td>@fat</td>
-      <td>@fat</td>
-    </tr>
-    <tr>
-      <th scope="row">3</th>
-      <td colspan="2">Larry the Bird</td>
-      <td>@twitter</td>
-      <td>@twitter</td>
-    </tr>
-  </tbody>
-</table>
-</main>
+    
+
+       <table class="table resposive table-sm  table-secondary table-hover  ">
+       <thead>  
+         <tr>
+            <th scope="col">Id produto</th>
+          <th scope="col">Nome</th>
+          <th scope="col">Categoria</th>
+            <th scope="col">Quantidade</th>
+              <th scope="col">Preço</th>
+            <th scope="col">Adicionar</th>
+            <th scope="col">Editar</th>
+          <th scope="col">Excluir</th>
+           </tr>
+        </thead>
+      <tbody>
+      <?php
+      if($query->rowCount() <= 0){
+        echo'';
+
+      }else{ 
+
+        foreach($resultado as $res){
+      echo '     <tr> ';
+      echo'      <th scope="row">'.$res['id']. '</th> ';
+      echo'       <td>' .$res['nome'] .'</td> ';
+      echo'       <td>' .$res['categoria'] .'</td> ';
+      echo'       <td>' .$res['quantidade'] .'</td> ';
+      echo'       <td>' .$res['preço'] .'</td> ';
+      echo'     </tr> ';
+ 
+      
+        }
+      }
+    ?>
+        </tbody>
+        </table>
+             </main>
+
 
 
 
