@@ -68,9 +68,10 @@ text-align: center;
 }
 
 #categorias{
+    width: 230px;
     text-align: center;
-    width: 160px;
     border-radius: 15px;
+    height: 38px;
     
 }
 #pesquisa{
@@ -78,7 +79,10 @@ text-align: center;
     text-align: center;
     border-radius: 15px;
     height: 38px;
+    margin-bottom: 10px;
+
 }
+
 
 table{
     border: 1px solid red;

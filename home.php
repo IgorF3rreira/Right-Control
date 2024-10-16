@@ -2,6 +2,7 @@
 // iniciar sessao de login
 session_start();
 
+
 // Arquivo de conexao
 include_once 'Conexao.php';
 
@@ -42,6 +43,8 @@ else{
       }
 }
 
+
+
 ?>
 
 
@@ -53,9 +56,14 @@ else{
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Right Control</title>
 
+      <!-- bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
+<!-- css -->
     <link rel="stylesheet" href="src/css/Home.css">
+
+        <!-- font font-awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
 
@@ -76,7 +84,7 @@ else{
 
             
             <select class="form-control form-select-sm btn btn-secondary "name="select" id="select">
-              <option value="categorias">categorias</option> 
+              <option value="">categorias</option> 
           
             </select>
            
@@ -103,7 +111,7 @@ else{
 
 <img src="src/img/logoTransparente.png" width="120px" height="120px" alt="">
     <div class="divTexto">
-        <h1>Texto de teste</h1>
+
         <h3>nome empresa</h3>
     </div>
     <div class="divConta">
@@ -121,18 +129,23 @@ else{
 
     <div class="container divBotoes">  
         <a class="btn btn-secondary" href="#AdicionarProdutos" data-bs-toggle="modal" data-bs-target="">Adicionar novo produto</a>
-        <a class="btn btn-secondary" href="#">Adicionar nova categoria</a>
 
-        <select class=" form-select-sm btn btn-secondary "name="select" id="categoria"><option value="categorias">categorias</option></select>
         <input class="" type="search" name="pesquisa" id="pesquisa" placeholder="Pesquise seu produto">
-       
-    </div>
 
     </form>
-
     
+      <form action="" method="post" name="form" id="form">
 
-       <table class="table resposive table-sm  table-secondary table-hover  ">
+      <input style="   width: 230px;
+    text-align: center;
+    border-radius: 15px;
+    height: 38px;" class="" type="search" name="categoria" id="categoria" placeholder="Pesquise a categoria">
+
+      </form>
+
+    </div>
+
+       <table class="table resposive table-sm  table-secondary table-hover  " style="text-align: center;">
        <thead>  
          <tr>
             <th scope="col">Id produto</th>
@@ -158,7 +171,11 @@ else{
       echo'       <td>' .$res['nome'] .'</td> ';
       echo'       <td>' .$res['categoria'] .'</td> ';
       echo'       <td>' .$res['quantidade'] .'</td> ';
-      echo'       <td>' .$res['preço'] .'</td> ';
+      echo'       <td>R$ ' .$res['preço'] .'</td> ';
+      echo'       <td style=cursor:pointer; > <i i  class="fa-solid fa-circle-plus"></i
+      > </td> ';
+      echo'       <td style=cursor:pointer;> <i class="fa-solid fa-pen-to-square"></i> </td> ';
+      echo'       <td style=cursor:pointer;> <i class="fa-solid fa-trash"></i> </td> ';
       echo'     </tr> ';
  
       
