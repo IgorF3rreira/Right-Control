@@ -46,6 +46,51 @@ else{
 
 
 
+
+//  CODIGO PARA PODER ADICIONAR UM PRODUTO NO SEU ESTOQUE
+
+// definir as variaveis e verificar se estão vazias
+if(isset($_POST['submit'])){
+  $nome = $_POST['nome'];
+  $categoria = $_POST['categoria'];
+  $quantidade = $_POST['qtd'];
+  $preco = $_POST['valor'];
+
+  if(empty($nome) || empty($categoria) || empty($quantidade) || empty($preco)){
+    echo '<script>
+    alert("Preencha todos os campos obrigatórios *")
+    </script>
+
+';
+}else{
+      $sql = 'INSERT INTO tab_produtos (nome,categoria,quantidade,preco) VALUES (:nome, :categoria,:quantidade, :preco)'; 
+      try {
+        $query = $bd->prepare($sql);
+        $query->bindValue(':nome', $nome, PDO::PARAM_STR);
+        $query->bindValue(':categoria', $categoria, PDO::PARAM_STR);
+        $query->bindValue(':quantidade', $quantidade,PDO::PARAM_INT);
+        $query->bindValue(':preco', $preco) ;
+        $query->execute();
+
+        // Recuperar o ultimo
+        $ultimoId = $bd->lastInsertId();
+        header('Location: home.php');
+
+        echo'<script>
+    alert("Produto adicionado com sucesso!!")
+        
+    </script>
+        ';
+
+   
+
+        
+      }catch(PDOException $e) {
+          echo $e->getMessage();
+      }
+  }
+}
+
 ?>
 
 
@@ -68,7 +113,36 @@ else{
 </head>
 <body>
 
-<!-- FORMULARIOS -->
+
+
+<!-- MODAL PARA MOSTRAR QUE O PRODUTO FOI ADICIONADO COM SUCESSO -->
+
+
+  <!-- MODAL PARA USUARIO CADASTRADO COM SUCESSO-->
+  <div class="modal fade" id="ProdutoCad" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="TituloModalCentralizado"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-success">
+          <h5 class="modal-title" id="TituloModalCentralizado">ATENÇÃO !!!</h5>
+          <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+            <span aria-hidden="true">&times;</span>
+          </button> -->
+        </div>
+        <div class="modal-body text-success">
+         Produto adicionado  com sucesso !!! 
+        </div>
+        <div class="modal-footer">
+          <a href="login.php" class="btn btn-secondary">Ok</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+<!-- MODAL COM FORMULARIO PARA PODER ADICIONAR UM PRODUTO AO ESTOQUE   -->
 <div class="modal fade" id="AdicionarProdutos" tabindex="-1" aria-labelledby="adicionarProduto" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -78,29 +152,33 @@ else{
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body ">
+
         <form class="form form-grid form-control container " action="" method="post" name="formProd" id="formProd" enctype="multipart/form-data">
 
             <label for="nome">Nome do produto</label>
-            <input class="form-control mb-3" type="text" name="nome" id="nome" placeholder="Digite o nome do produto">
+            <input class="form-control mb-3" required type="text" name="nome" id="nome" placeholder="Digite o nome do produto">
 
+            <label for="nome">Categoria</label>
+            <input class="form-control emb-3" required type="text" name="categoria" id="categoria" placeholder="defina uma categoria">
             
-            <select class="form-control form-select-sm btn btn-secondary "name="select" id="select">
-              <option value="">categorias</option> 
-          
-            </select>
            
             <label for="qtd">Quantidade</label>
-            <input class="form-control" type="number" name="qtd" id="qtd" placeholder="Digite a quantidade do produto">
+            <input class="form-control" required type="number" name="qtd" id="qtd" placeholder="Digite a quantidade do produto">
 
-            <label for="preco">Nome do produto</label>
-            <input class="form-control" type="text" cname="preco" id="preco" placeholder="Digite o preço">
+            <label for="valor">Preço</label>
+            <input class="form-control" required type="text" name="valor" id="valor" placeholder="Digite o preço">
 
-        </form>
-      </div>
+        
+
+    
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" name="submit" id="submit" class="btn btn-primary">Adicionar</button>
       </div>
+
+      </form>
+      </div>
+
     </div>
   </div>
 </div>
@@ -114,9 +192,14 @@ else{
     <div class="divTexto">
 
       
-        <h2>Olá <?php echo $_SESSION['nome']; ?> </h2>
-        <h3><?php echo $_SESSION['empresa']; ?> </h3>
+        <h2 style="font-family: sans-serif; text-decoration: underline; "
+        >Olá <?php echo $_SESSION['nome']; ?> </h2>
+
+
+        <h3 style="ont-family: sans-serif; font-weight: bolder;text-shadow: 1px 1px white;background-image: linear-gradient(to right top, #272924, #232521, #20201d, #1c1c1a, #181817); ">
+          <?php echo $_SESSION['empresa']; ?> </h3>
     </div>
+
     <div class="divConta">
         <a class="sobreConta btn btn-secondary" href="">Minha conta</a>
         <a class="logout btn btn-secondary" href="">Sair</a>
@@ -139,7 +222,7 @@ else{
     
       <form action="" method="post" name="form" id="form">
 
-      <input style="   width: 230px;
+      <input style=" width: 230px;
     text-align: center;
     border-radius: 15px;
     height: 38px;" class="" type="search" name="categoria" id="categoria" placeholder="Pesquise a categoria">
@@ -152,8 +235,8 @@ else{
 
        <table  class="table  table-sm  table-secondary table-hover  " style="text-align: center; height:250px; ">
        <thead>  
-         <tr>
-            <th scope="col">Id produto</th>
+         <tr >
+            <th  scope="col">Id produto</th>
           <th scope="col">Nome</th>
           <th scope="col">Categoria</th>
             <th scope="col">Quantidade</th>
@@ -172,11 +255,11 @@ else{
 
         foreach($resultado as $res){
       echo '     <tr> ';
-      echo'      <th scope="row">'.$res['id']. '</th> ';
+      echo'      <th style="" scope="row">'.$res['id']. '</th> ';
       echo'       <td>' .$res['nome'] .'</td> ';
       echo'       <td>' .$res['categoria'] .'</td> ';
       echo'       <td>' .$res['quantidade'] .'</td> ';
-      echo'       <td>R$ ' .$res['preço'] .'</td> ';
+      echo'       <td>R$ ' .$res['preco'] .'</td> ';
       echo'       <td style=cursor:pointer; > <i i  class="fa-solid fa-circle-plus"></i
       > </td> ';
       echo'       <td style=cursor:pointer;> <i class="fa-solid fa-pen-to-square"></i> </td> ';
