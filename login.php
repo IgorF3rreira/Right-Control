@@ -35,6 +35,7 @@
             $_SESSION['logado'] = true;
                $_SESSION['id_usuario'] = $usuario['id_usuario'];
                $_SESSION['nome'] = $usuario['nome'];
+               $_SESSION['empresa'] = $usuario['empresa'];
           }
             
     }

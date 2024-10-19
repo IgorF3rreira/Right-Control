@@ -3,6 +3,7 @@
 session_start();
 
 
+
 // Arquivo de conexao
 include_once 'Conexao.php';
 
@@ -112,7 +113,9 @@ else{
 <img src="src/img/logoTransparente.png" width="120px" height="120px" alt="">
     <div class="divTexto">
 
-        <h3>nome empresa</h3>
+      
+        <h2>Olá <?php echo $_SESSION['nome']; ?> </h2>
+        <h3><?php echo $_SESSION['empresa']; ?> </h3>
     </div>
     <div class="divConta">
         <a class="sobreConta btn btn-secondary" href="">Minha conta</a>
@@ -145,7 +148,9 @@ else{
 
     </div>
 
-       <table class="table resposive table-sm  table-secondary table-hover  " style="text-align: center;">
+      <div style="height:400px;  overflow-y: auto; ">
+
+       <table  class="table  table-sm  table-secondary table-hover  " style="text-align: center; height:250px; ">
        <thead>  
          <tr>
             <th scope="col">Id produto</th>
@@ -184,6 +189,7 @@ else{
     ?>
         </tbody>
         </table>
+    </div>
              </main>
 
 
