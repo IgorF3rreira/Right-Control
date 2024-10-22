@@ -84,6 +84,19 @@ if(isset($_POST['submit'])){
   }
 }
 
+// Código para poder alterar um produto
+
+$id_produto = isset($GET['id_produto']) ? $_GET['id_produto'] :null;
+$sql = 'SELECT * FROM tab_produtos WHERE id_produto = :id_produto';
+try {
+ $query = $bd->prepare($sql);
+ $query->execute(array(':id_produto' => $id_produto));
+ $resultado = $query->fetch(PDO::FETCH_LAZY);
+}catch(PDOException $e){
+ echo $e->getMessage();
+}
+
+
 ?>
 
 
@@ -108,7 +121,7 @@ if(isset($_POST['submit'])){
 
 
 
-<!-- MODAL PARA ADICIONAR MAIS QUANTIDADE AO PRODUTO -->
+<!-- MODAL PARA EDITAR MAIS QUANTIDADE AO PRODUTO -->
 <div class="modal fade" id="editarProdutos" tabindex="-1" aria-labelledby="editarProdutos" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -266,7 +279,7 @@ if(isset($_POST['submit'])){
 
         foreach($resultado as $res){
       echo '     <tr> ';
-      echo'      <th style="" scope="row">'.$res['id']. '</th> ';
+      echo'      <th style="" scope="row">'.$res['id_produto']. '</th> ';
       echo'       <td>' .$res['nome'] .'</td> ';
       echo'       <td>' .$res['categoria'] .'</td> ';
       echo'       <td>' .$res['quantidade'] .'</td> ';
