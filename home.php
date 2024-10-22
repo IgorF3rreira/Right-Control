@@ -71,18 +71,11 @@ if(isset($_POST['submit'])){
         $query->bindValue(':quantidade', $quantidade,PDO::PARAM_INT);
         $query->bindValue(':preco', $preco) ;
         $query->execute();
+        
 
         // Recuperar o ultimo
         $ultimoId = $bd->lastInsertId();
         header('Location: home.php');
-
-        echo'<script>
-    alert("Produto adicionado com sucesso!!")
-        
-    </script>
-        ';
-
-   
 
         
       }catch(PDOException $e) {
@@ -115,29 +108,48 @@ if(isset($_POST['submit'])){
 
 
 
-<!-- MODAL PARA MOSTRAR QUE O PRODUTO FOI ADICIONADO COM SUCESSO -->
-
-
-  <!-- MODAL PARA USUARIO CADASTRADO COM SUCESSO-->
-  <div class="modal fade" id="ProdutoCad" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="TituloModalCentralizado"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header bg-success">
-          <h5 class="modal-title" id="TituloModalCentralizado">ATENÇÃO !!!</h5>
-          <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
-            <span aria-hidden="true">&times;</span>
-          </button> -->
-        </div>
-        <div class="modal-body text-success">
-         Produto adicionado  com sucesso !!! 
-        </div>
-        <div class="modal-footer">
-          <a href="login.php" class="btn btn-secondary">Ok</a>
-        </div>
+<!-- MODAL PARA ADICIONAR MAIS QUANTIDADE AO PRODUTO -->
+<div class="modal fade" id="editarProdutos" tabindex="-1" aria-labelledby="editarProdutos" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header container">
+        <h3 style="color:black; " class="w-100">Adicione um novo produto</h3>
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
+      <div class="modal-body ">
+
+        <form class="form form-grid form-control container " action="" method="post" name="form" id="form" enctype="multipart/form-data">
+          
+
+            <label for="nome">Nome do produto</label>
+            <input class="form-control mb-3" required type="text" name="nome" id="nome" placeholder="Digite o nome do produto" value="<?php ?>">
+
+            <label for="nome">Categoria</label>
+            <input class="form-control emb-3" required type="text" name="categoria" id="categoria" placeholder="defina uma categoria">
+            
+           
+            <label for="qtd">Quantidade</label>
+            <input class="form-control" required type="number" name="qtd" id="qtd" placeholder="Digite a quantidade do produto">
+
+            <label for="valor">Preço</label>
+            <input class="form-control" required type="text" name="valor" id="valor" placeholder="Digite o preço">
+
+        
+
+    
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" name="submit" id="submit" class="btn btn-primary">Adicionar</button>
+      </div>
+
+      </form>
+      </div>
+
     </div>
   </div>
+</div>
+
 
 
 
@@ -196,7 +208,7 @@ if(isset($_POST['submit'])){
         >Olá <?php echo $_SESSION['nome']; ?> </h2>
 
 
-        <h3 style="ont-family: sans-serif; font-weight: bolder;text-shadow: 1px 1px white;background-image: linear-gradient(to right top, #272924, #232521, #20201d, #1c1c1a, #181817); ">
+        <h3 style="font-family: sans-serif; font-weight: bolder;text-shadow: 1px 1px white;background-image: linear-gradient(to right top, #272924, #232521, #20201d, #1c1c1a, #181817); ">
           <?php echo $_SESSION['empresa']; ?> </h3>
     </div>
 
@@ -241,7 +253,6 @@ if(isset($_POST['submit'])){
           <th scope="col">Categoria</th>
             <th scope="col">Quantidade</th>
               <th scope="col">Preço</th>
-            <th scope="col">Adicionar</th>
             <th scope="col">Editar</th>
           <th scope="col">Excluir</th>
            </tr>
@@ -260,9 +271,9 @@ if(isset($_POST['submit'])){
       echo'       <td>' .$res['categoria'] .'</td> ';
       echo'       <td>' .$res['quantidade'] .'</td> ';
       echo'       <td>R$ ' .$res['preco'] .'</td> ';
-      echo'       <td style=cursor:pointer; > <i i  class="fa-solid fa-circle-plus"></i
-      > </td> ';
-      echo'       <td style=cursor:pointer;> <i class="fa-solid fa-pen-to-square"></i> </td> ';
+
+      echo'       <td style=cursor:pointer;> <a href="#exampleModal "  data-bs-toggle="modal" data-bs-target="#editarProdutos"> <i class="fa-solid fa-pen-to-square"></i> </a> </td> ';
+
       echo'       <td style=cursor:pointer;> <i class="fa-solid fa-trash"></i> </td> ';
       echo'     </tr> ';
  
