@@ -70,21 +70,34 @@ if(isset($_POST['submit'])){
                             $query->bindValue('dtNasc', $dtNasc);
                             $query->bindValue('empresa',$empresa, pdo::PARAM_STR);
                             $query->bindValue('email', $email, PDO::PARAM_STR);
-                            $query->bindValue('senha', hash('sha256', $senha));
+                            $query->bindValue('senha', hash('sha256', $senha));                                          
                             $query->execute();
 
-                        }catch(PDOException $e) {
-                            echo 'Erro'. $e->getMessage();
+                        
+                        // Obter o ID do usuário cadastrado
+                        $usuarioId = $bd->lastInsertId();
+
+                        // Criar a tabela tab_produtos para o usuário
+                        $tabelaProdutos = "tab_produtos_" . $usuarioId;
+                        $sql = "CREATE TABLE IF NOT EXISTS $tabelaProdutos (
+                            id INT AUTO_INCREMENT PRIMARY KEY,
+                            nome VARCHAR(100),
+                            categoria VARCHAR(100),
+                            quantidade INT,
+                            preco DECIMAL(10, 2)
+                        )";
+                        $bd->exec($sql);
+
+                        echo '<script type="text/javascript">window.alert("Usuário cadastrado com sucesso!");</script>';
+                    } catch (PDOException $e) {
+                        echo 'Erro: ' . $e->getMessage();
                     }
                 }
             }
         }
-
     }
-
-  }
 }
-
+}
 ?>
 
 

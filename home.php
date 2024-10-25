@@ -6,6 +6,22 @@ session_start();
 include_once 'Conexao.php';
 
 
+// Verificar se o usuário está logado
+if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true) {
+  header('Location: login.php');
+  exit();
+}
+
+// Obter o ID do usuário logado
+$id_usuario = $_SESSION['id_usuario'];
+$tabelaProdutos = "tab_produtos_" . $id_usuario;
+
+// Buscar os produtos do usuário
+
+
+
+
+
 $erroNenhum = false;
 
 // criando o metodo para fazer a busca no input de pesquisa
@@ -13,33 +29,39 @@ $pesquisa = isset($_POST['pesquisa']) ? $_POST['pesquisa'] :null;
 $categoria = isset($_POST['categoria']) ? $_POST['categoria'] :null;
 
 // verificar se a varivel esta vazia e se ela estiver vazia iremos buscar tods os dado no banco de dados
-if(empty($pesquisa) && empty($categoria)){
-  $sql = 'SELECT * FROM tab_produtos';
+$sql = empty($pesquisa) && empty($categoria) 
+    ? "SELECT * FROM $tabelaProdutos" 
+    : "SELECT * FROM $tabelaProdutos WHERE nome LIKE :nome AND categoria LIKE :categoria";
 
-  try {
+try {
     $query = $bd->prepare($sql);
-    $query->execute(); 
-    $resultado = $query->fetchAll(PDO::FETCH_ASSOC);
-  }catch(PDOException $e) {
+    if (!empty($pesquisa)) {
+        $query->bindValue(':nome', '%' . $pesquisa . '%');
+    }
+    if (!empty($categoria)) {
+        $query->bindValue(':categoria', '%' . $categoria . '%');
+    }
+    $query->execute();
+    $produtos = $query->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
     echo $e->getMessage();
-  }
 }
 
 //  Fazer a consulta com o parametro que foi colocado no input de pesquisa
-else{
-  $sql = 'SELECT * FROM tab_produtos WHERE nome LIKE :nome AND categoria LIKE :categoria';
+
+  $sql = "SELECT * FROM $tabelaProdutos WHERE nome LIKE :nome AND categoria LIKE :categoria";
   try {
     $query = $bd->prepare($sql);
     $query->bindValue(':nome','%'. $pesquisa . '%');
     $query->bindValue(':categoria','%'. $categoria . '%');
     $query->execute();
-    $resultado = $query->fetchAll(PDO::FETCH_ASSOC);
-    if(count($resultado) <= 0){
+    $produtos= $query->fetchAll(PDO::FETCH_ASSOC);
+    if(count($produtos) <= 0){
       $erroNenhum = true;
   }    } catch(PDOException $e) {
     echo $e->getMessage();
     }
-}
+
     
   
   
@@ -48,7 +70,7 @@ else{
   //  CODIGO PARA PODER ADICIONAR UM PRODUTO NO SEU ESTOQUE
   
   // definir as variaveis e verificar se estão vazias
-  if(isset($_POST['submit'])){
+  if(isset($_POST['adicionar'])){
     $nome = $_POST['nome'];
     $categoria = $_POST['categoria'];
     $quantidade = $_POST['qtd'];
@@ -61,7 +83,7 @@ else{
   
   ';
   }else{
-        $sql = 'INSERT INTO tab_produtos (nome,categoria,quantidade,preco) VALUES (:nome, :categoria,:quantidade, :preco)'; 
+        $sql = "INSERT INTO $tabelaProdutos (nome,categoria,quantidade,preco) VALUES (:nome, :categoria,:quantidade, :preco)";
         try {
           $query = $bd->prepare($sql);
           $query->bindValue(':nome', $nome, PDO::PARAM_STR);
@@ -81,10 +103,12 @@ else{
         }
     }
   }
+
+
   
-  // Verifica se o formulário de edição foi enviado
+  // cÓDIGO PARA EDITAR UM REGISTRO
   
-  if (isset($_POST['submit'])) {
+  if (isset($_POST['editar'])) {
     $id = $_POST['editarId']; 
     $nome = $_POST['nome'];
     $categoria = $_POST['categoria'];
@@ -94,14 +118,14 @@ else{
     if(empty($nome) || empty($categoria) || empty($quantidade) || empty($preco)){
         echo '<script>alert("Preencha todos os campos obrigatórios *")</script>';
     } else {
-        $sql = 'UPDATE tab_produtos SET nome = :nome, categoria = :categoria, quantidade = :quantidade, preco = :preco WHERE id_produto = :id_produto ';
+        $sql = "UPDATE $tabelaProdutos SET nome = :nome, categoria = :categoria, quantidade = :quantidade, preco = :preco WHERE id = :id";
         try {
             $query = $bd->prepare($sql);
             $query->bindParam(':nome', $nome, PDO::PARAM_STR);
             $query->bindParam(':categoria', $categoria, PDO::PARAM_STR);
             $query->bindParam(':quantidade', $quantidade, PDO::PARAM_INT);
             $query->bindParam(':preco', $preco);
-            $query->bindParam(':id_produto', $id);
+            $query->bindParam(':id', $id);
            
         
             $query->execute();
@@ -111,9 +135,26 @@ else{
         }
     }
   }
+
+
+  // cÓDIGO PARA EXCLUIR UM REGISTRO
   
-  
-  
+
+
+// $id = isset($_GET['id_produto']) ? $_GET['id_produto'] : null;
+// $sql = 'DELETE FROM tab_produtos WHERE id_produto = :id_produto';
+// try{
+//     $query = $bd->prepare($sql);
+//     $query->bindValue(':id_produto', $id);
+//     $query->execute();
+//     // $resultado = $query->fetchAll(PDO::FETCH_ASSOC);
+
+//     header('Location: home.php');
+
+// }catch(PDOException $e){
+//     echo $e->getMessage();
+// }
+
   ?>
   
   
@@ -172,7 +213,7 @@ else{
       
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="submit" name="submit" id="submit" class="btn btn-primary">Adicionar</button>
+          <button type="submit" name="editar" id="submit" class="btn btn-primary">Adicionar</button>
         </div>
   
         </form>
@@ -196,7 +237,6 @@ else{
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body ">
-  
           <form class="form form-grid form-control container " action="" method="post" name="formProd" id="formProd" enctype="multipart/form-data">
   
   
@@ -221,7 +261,7 @@ else{
       
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="submit" name="submit" id="submit" class="btn btn-primary">Adicionar</button>
+          <button type="submit" name="adicionar" id="submit" class="btn btn-primary">Adicionar</button>
         </div>
   
         </form>
@@ -235,28 +275,31 @@ else{
 
 
   <!-- Modal para confirmar se o usuario quer realmente excluir o produto do estoque -->
-  <div class="modal fade" id="excluir" tabindex="-1" role="dialog" aria-labelledby="TituloModalCentralizado" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+
+
+<div class="modal fade" id="excluir" tabindex="-1" role="dialog" aria-labelledby="TituloModalCentralizado" aria-hidden="true">
+    <div class="modal-dialog">
         <div class="modal-content">
-        <div class="modal-header bg-danger">
-            <h5 class="modal-title text-light" id="TituloModalCentralizado">Excluir</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
-            <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        <div class="modal-body">
-            <p class="text-center">
-                Deseja excluir este compromisso?
-            </p>
-        </div>
-        <div class="modal-footer">
-            <a href="" class="btn btn-danger" id="link">Sim</a>
-            <button type="button" class="btn btn-secondary" 
-                    data-dismiss="modal">Não</button>
-        </div>
+            <div class="modal-header bg-danger">
+                <h5 class="modal-title text-light" id="TituloModalCentralizado">Excluir</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-center bg-dark">Deseja excluir este registro?</p>
+                <input type="hidden" id="deleteId" name="deleteId">
+            </div>
+            <div class="modal-footer">
+                <form method="post" action="" enctype="multipart/form-data">
+                    <input type="hidden" name="deleteId" id="deleteId">
+                    <button type="submit" name="delete" class="btn btn-danger">Sim</button>
+                </form>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Não</button>
+            </div>
         </div>
     </div>
-    </div>
+</div>
+
+
 
   
   
@@ -320,36 +363,25 @@ else{
              </tr>
           </thead>
         <tbody>
-        <?php
-        if($query->rowCount() <= 0){
-          echo'';
-  
-        }else{ 
-  
-          foreach($resultado as $res){
-        echo '     <tr> ';
-        echo'      <th style="" scope="row">'.$res['id_produto']. '</th> ';
-        echo'       <td>' .$res['nome'] .'</td> ';
-        echo'       <td>' .$res['categoria'] .'</td> ';
-        echo'       <td>' .$res['quantidade'] .'</td> ';
-        echo'       <td>R$ ' .$res['preco'] .'</td> ';
-  
-        echo " <td style=cursor:pointer;> 
-        <a href='?id=$res[id_produto]' onclick='abrirModalEditar({$res['id_produto']}, \"{$res['nome']}\", \"{$res['categoria']}\", {$res['quantidade']}, {$res['preco']})' data-bs-toggle='modal' data-bs-target='#editarProdutos'> 
-        <i class='fa-solid fa-pen-to-square'></i> 
-        </a> </td>";
-        
-        echo '<td style="cursor:pointer;"> 
-        <a href="#excluir" data-bs-toggle="modal" data-bs-target="" onclick="excluir(' . $res['id_produto'] . ')"> 
-            <i class="fa-solid fa-trash"></i> 
-        </a> 
-      </td>';
 
-        echo'     </tr> ';
-   
-        
-          }
-        }
+        <?php
+        if (!empty($produtos)) {
+    foreach ($produtos as $res) {
+        echo '<tr>';
+        echo '<th scope="row">' . $res['id'] . '</th>';
+        echo '<td>' . $res['nome'] . '</td>';
+        echo '<td>' . $res['categoria'] . '</td>';
+        echo '<td>' . $res['quantidade'] . '</td>';
+        echo '<td>R$ ' . $res['preco'] . '</td>';
+
+        echo "<td><a href='?id={$res['id']}' onclick='abrirModalEditar({$res['id']}, \"{$res['nome']}\", \"{$res['categoria']}\", {$res['quantidade']}, {$res['preco']})' data-bs-toggle='modal' data-bs-target='#editarProdutos'><i class='fa-solid fa-pen-to-square'></i></a></td>";
+
+        echo "<td><a href='excluir.php?id={$res['id']}'><i class='fa-solid fa-trash'></i></a></td>";
+        echo '</tr>';
+    }
+} else {
+    echo '<tr><td colspan="7">Nenhum produto encontrado.</td></tr>';
+}
       ?>
           </tbody>
           </table>
@@ -363,15 +395,16 @@ else{
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   
   <script>
-  function abrirModalEditar(id_produto, nome, categoria, quantidade, preco) {
+  function abrirModalEditar(id, nome, categoria, quantidade, preco) {
       document.getElementById('nome').value = nome;
       document.getElementById('categoria').value = categoria;
       document.getElementById('qtd').value = quantidade;
       document.getElementById('valor').value = preco;
-      document.getElementById('editarId').value = id_produto; // Adicione um campo oculto para o ID
+      document.getElementById('editarId').value = id; // Adicione um campo que vai ser invisivel para ficar com o id
   }
   </script>
   
+
 
   
   

@@ -1,18 +1,19 @@
 <?php
+
+include_once 'conexao.php';
 session_start();
-include_once 'Conexao.php';
-
-
-// Código para poder excluir um produto
-$id_produto = isset($_GET['id_produto']) ? $_GET['id_produto'] : null;
-
-$sql = 'DELETE FROM tab_produtos WHERE id_produto = ?';
-try {
+$id = isset($_GET['id_produto']) ? $_GET['id_produto'] : null;
+$sql = 'DELETE FROM tab_produtos  WHERE id_produto = :id_produto';
+try{
     $query = $bd->prepare($sql);
-    $query->bindParam(1, $id_produto, PDO::PARAM_INT);
+    $query->bindParam(':id_produto', $id, PDO::PARAM_INT);
     $query->execute();
+    // $resultado = $query->fetchAll(PDO::FETCH_ASSOC);
+
     header('Location: home.php');
-} catch (Exception $e) {
+
+}catch(PDOException $e){
     echo $e->getMessage();
 }
+
 
