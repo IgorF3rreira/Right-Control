@@ -12,11 +12,10 @@ if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true) {
   exit();
 }
 
-// Obter o ID do usuário logado
+// pegar o id do usuario logado
 $id_usuario = $_SESSION['id_usuario'];
 $tabelaProdutos = "tab_produtos_" . $id_usuario;
 
-// Buscar os produtos do usuário
 
 
 
@@ -141,19 +140,19 @@ try {
   
 
 
-// $id = isset($_GET['id_produto']) ? $_GET['id_produto'] : null;
-// $sql = 'DELETE FROM tab_produtos WHERE id_produto = :id_produto';
-// try{
-//     $query = $bd->prepare($sql);
-//     $query->bindValue(':id_produto', $id);
-//     $query->execute();
-//     // $resultado = $query->fetchAll(PDO::FETCH_ASSOC);
+  if (isset($_POST['delete'])) {
+    $id = $_POST['id'];
+    $sql = "DELETE FROM $tabelaProdutos WHERE id = :id";
+    try {
+        $query = $bd->prepare($sql);
+        $query->bindValue(':id', $id);
+        $query->execute();
+        header('Location: home.php');
+    } catch (PDOException $e) {
+        echo $e->getMessage();
+    }
+}
 
-//     header('Location: home.php');
-
-// }catch(PDOException $e){
-//     echo $e->getMessage();
-// }
 
   ?>
   
@@ -318,8 +317,8 @@ try {
       </div>
   
       <div class="divConta">
-          <a class="sobreConta btn btn-secondary" href="">Minha conta</a>
-          <a class="logout btn btn-secondary" href="">Sair</a>
+          <a class="sobreConta btn btn-secondary" href="minhaConta.php?id_usuario=<?php echo $_SESSION['id_usuario'] ?>">Minha conta</a>
+          <a class="logout btn btn-secondary" href="logoff.php">Sair</a>
       </div>
   
   
@@ -376,11 +375,19 @@ try {
 
         echo "<td><a href='?id={$res['id']}' onclick='abrirModalEditar({$res['id']}, \"{$res['nome']}\", \"{$res['categoria']}\", {$res['quantidade']}, {$res['preco']})' data-bs-toggle='modal' data-bs-target='#editarProdutos'><i class='fa-solid fa-pen-to-square'></i></a></td>";
 
-        echo "<td><a href='excluir.php?id={$res['id']}'><i class='fa-solid fa-trash'></i></a></td>";
+        echo "<td>
+        <form method='POST' action=''>
+            <input type='hidden' name='id' value='{$res['id']}'>
+            <button type='submit' name='delete' class='btn btn-link text-danger'>
+                <i class='fa-solid fa-trash'></i>
+            </button>
+        </form>
+    </td>";
+    
         echo '</tr>';
     }
 } else {
-    echo '<tr><td colspan="7">Nenhum produto encontrado.</td></tr>';
+    echo '<tr><td colspan="7 " >Nenhum produto encontrado.</td></tr>';
 }
       ?>
           </tbody>

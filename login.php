@@ -23,7 +23,7 @@
             
            if(count($usuarios) <= 0){
              echo '<script type="text/javascript"> 
-               window.alert("Usuario ainda não cadastrado");
+               window.alert("Usuario ou Senha incorretos !!");
                    </script>';
          }else{  //'else para caso ele encontre  as informações passadas, redirecionar para a pagina que só pode ser acessada se estiver logado'
                header('Location: home.php');
@@ -85,7 +85,7 @@
             </div>
 
             <div class="esqueceuSenha">
-                <a href="#">Esqueceu sua senha?</a>
+                <a href="esqueceuSenha.php">Esqueceu sua senha?</a>
             </div>
 
             <button type="submit" id="submit" name="submit" class="btn">Login</button>
