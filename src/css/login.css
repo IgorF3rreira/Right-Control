@@ -7,7 +7,11 @@ body{
     padding: 0px;
     box-sizing: border-box;
     font-family:"Poppins", sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
+
 
 header{
     text-align: center;
@@ -19,10 +23,12 @@ header{
 }
 
 main{
+    
+    flex: 1;
     display:flex;
     justify-content: center;
     align-items: center;
-    min-height: 45vh;
+    margin-bottom: 50px;
    
 }
 
@@ -135,3 +141,21 @@ main{
 }
 
 
+#meu-footer{
+    
+    width: 100%;
+border: none;
+    text-align: center;
+    justify-content: center;
+    position: relative;
+    text-decoration: none;
+  
+        padding: 10px;
+        
+
+   
+}  
+#meu-footer a{
+    text-decoration:  none;
+    color: white;
+}

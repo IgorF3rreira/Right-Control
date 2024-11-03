@@ -41,7 +41,7 @@ if (isset($_POST['submit'])) {
     if (empty($nome) || empty($email) || empty($empresa) || empty($sobrenome)) {
         echo '<script>alert("Necessário preencher todos os campos para alteração");</script>';
     } else {
-        if(!empty($senhaAtual) && !empty($senhaNova) ){
+        if(!empty($senhaAtual) && !empty($senhaNova) ){ //achar o usuario
         $consultaSenha = 'SELECT * FROM tab_usuarios WHERE senha = :senha AND id_usuario = :id_usuario';
         $stmt = $bd->prepare($consultaSenha);
         $stmt->bindParam(':senha', $senhaAtual);
@@ -49,8 +49,9 @@ if (isset($_POST['submit'])) {
         $stmt->execute();
         $registro = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
+        
         if (count($registro) == 1) {
-            // Atualiza os dados do usuário
+            // Atualiza os dados do usuário mudando a senha junto se ele quiser
             $sql = 'UPDATE tab_usuarios SET nome = ?, sobrenome = ?, empresa = ?, email = ?, senha = ? WHERE id_usuario = ?';
             try {
                 $query = $bd->prepare($sql);
@@ -58,7 +59,12 @@ if (isset($_POST['submit'])) {
                 
                 // Redirecionar para a página de login
                 session_destroy();
-                header('Location: login.php');
+                echo '<script type="text/javascript">
+                window.alert("Suas informações foram atualizadas com sucesso !!");
+                setTimeout(function() {
+                    window.location.href = "login.php"; 
+                }, 100);
+            </script>';
                 exit();
             } catch (PDOException $e) {
                 echo $e->getMessage();
@@ -72,7 +78,7 @@ if (isset($_POST['submit'])) {
         $stmt->bindParam(':id_usuario', $id_usuario);
         $stmt->execute();
         $registro = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
+                    // Atualiza os dados do usuário para quando ele nao mudar a senha
         if (count($registro) == 1) {
             // Atualiza os dados do usuário
             $sql = 'UPDATE tab_usuarios SET nome = ?, sobrenome = ?, empresa = ?, email = ?WHERE id_usuario = ?';
@@ -82,7 +88,12 @@ if (isset($_POST['submit'])) {
                 
                 // Redirecionar para a página de login
                 session_destroy();
-                header('Location: login.php');
+                echo '<script type="text/javascript">
+                window.alert("Suas informações foram atualizadas com sucesso !!");
+                setTimeout(function() {
+                    window.location.href = "login.php"; 
+                }, 100);
+            </script>';
                 exit();
             } catch (PDOException $e) {
                 echo $e->getMessage();

@@ -88,7 +88,12 @@ if(isset($_POST['submit'])){
                         )";
                         $bd->exec($sql);
 
-                        echo '<script type="text/javascript">window.alert("Usuário cadastrado com sucesso!");</script>';
+                        echo '<script type="text/javascript">
+                        window.alert("Usuario cadastrado com sucesso !!");
+                        setTimeout(function() {
+                            window.location.href = "login.php"; 
+                        }, 100);
+                    </script>';
                     } catch (PDOException $e) {
                         echo 'Erro: ' . $e->getMessage();
                     }
@@ -119,7 +124,7 @@ if(isset($_POST['submit'])){
 <body>
  
     <header>
-        <img id="logo"  src="src/img/logoTransparente.png" alt="">
+       <a href="inicial.php"> <img id="logo"  src="src/img/logoTransparente.png" alt=""> </a>
     </header>
 
    
@@ -171,6 +176,13 @@ if(isset($_POST['submit'])){
     </div>
 
 </main>
+
+<footer id="meu-footer" class="container" >
+   
+<a href="https://linktr.ee/RightControl" target="_blank" >
+&copy; Saiba mais</a>
+
+</footer>
 
 
 

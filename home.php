@@ -28,24 +28,20 @@ $pesquisa = isset($_POST['pesquisa']) ? $_POST['pesquisa'] :null;
 $categoria = isset($_POST['categoria']) ? $_POST['categoria'] :null;
 
 // verificar se a varivel esta vazia e se ela estiver vazia iremos buscar tods os dado no banco de dados
-$sql = empty($pesquisa) && empty($categoria) 
-    ? "SELECT * FROM $tabelaProdutos" 
-    : "SELECT * FROM $tabelaProdutos WHERE nome LIKE :nome AND categoria LIKE :categoria";
 
+if(empty($pesquisa) && empty($categoria)){
+$sql = "SELECT * FROM $tabelaProdutos";
 try {
-    $query = $bd->prepare($sql);
-    if (!empty($pesquisa)) {
-        $query->bindValue(':nome', '%' . $pesquisa . '%');
-    }
-    if (!empty($categoria)) {
-        $query->bindValue(':categoria', '%' . $categoria . '%');
-    }
-    $query->execute();
-    $produtos = $query->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    echo $e->getMessage();
-}
-
+  $query = $bd->prepare($sql);
+  $query->execute();
+  $produtos= $query->fetchAll(PDO::FETCH_ASSOC);
+  if(count($produtos) <= 0){
+    $erroNenhum = true;
+}    } catch(PDOException $e) {
+  echo $e->getMessage();
+  }
+}else{
+    
 //  Fazer a consulta com o parametro que foi colocado no input de pesquisa
 
   $sql = "SELECT * FROM $tabelaProdutos WHERE nome LIKE :nome AND categoria LIKE :categoria";
@@ -61,7 +57,7 @@ try {
     echo $e->getMessage();
     }
 
-    
+  }
   
   
   
